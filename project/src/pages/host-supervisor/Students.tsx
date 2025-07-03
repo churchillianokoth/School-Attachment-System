@@ -7,10 +7,15 @@ import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/DashboardHeader';
 import StudentCard from '@/components/StudentCard';
 import CreateEvaluationForm from '@/components/forms/CreateEvaluationForm';
+import AssignStudentForm from '@/components/forms/AssignStudentForm';
+import StudentDetailsForm from '@/components/forms/StudentDetailsForm';
 
 const Students = () => {
   const [showCreateEvaluationForm, setShowCreateEvaluationForm] = useState(false);
+  const [showAssignStudentForm, setShowAssignStudentForm] = useState(false);
+  const [showStudentDetailsForm, setShowStudentDetailsForm] = useState(false);
   const [selectedStudentForEvaluation, setSelectedStudentForEvaluation] = useState('');
+  const [selectedStudentForDetails, setSelectedStudentForDetails] = useState<any>(null);
 
   const assignedStudents = [
     {
@@ -59,7 +64,11 @@ const Students = () => {
   );
 
   const handleViewDetails = (id: number) => {
-    console.log('View details for student:', id);
+    const student = assignedStudents.find(s => s.id === id);
+    if (student) {
+      setSelectedStudentForDetails(student);
+      setShowStudentDetailsForm(true);
+    }
   };
 
   const handleEvaluate = (id: number) => {
@@ -74,8 +83,8 @@ const Students = () => {
     console.log('Evaluation created:', data);
   };
 
-  const handleAssignStudent = () => {
-    console.log('Assign student clicked');
+  const handleAssignStudent = (data: any) => {
+    console.log('Student assigned:', data);
   };
 
   return (
@@ -87,7 +96,7 @@ const Students = () => {
           actionButton={{
             label: "Assign Student",
             icon: UserPlus,
-            onClick: handleAssignStudent
+            onClick: () => setShowAssignStudentForm(true)
           }}
         />
 
@@ -161,6 +170,23 @@ const Students = () => {
             }}
             onSubmit={handleCreateEvaluation}
             studentName={selectedStudentForEvaluation}
+          />
+        )}
+
+        {showAssignStudentForm && (
+          <AssignStudentForm
+            onClose={() => setShowAssignStudentForm(false)}
+            onSubmit={handleAssignStudent}
+          />
+        )}
+
+        {showStudentDetailsForm && selectedStudentForDetails && (
+          <StudentDetailsForm
+            onClose={() => {
+              setShowStudentDetailsForm(false);
+              setSelectedStudentForDetails(null);
+            }}
+            student={selectedStudentForDetails}
           />
         )}
       </div>

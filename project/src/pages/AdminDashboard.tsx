@@ -15,7 +15,10 @@ import {
   Plus,
   Eye,
   XCircle,
-  Download
+  Download,
+  UserPlus,
+  Edit,
+  Settings as SettingsIcon
 } from 'lucide-react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -23,10 +26,30 @@ import StatsCard from '@/components/StatsCard';
 import ApplicationCard from '@/components/ApplicationCard';
 import AddOrganizationForm from '@/components/forms/AddOrganizationForm';
 import AddStudentForm from '@/components/forms/AddStudentForm';
+import StudentProfileForm from '@/components/forms/StudentProfileForm';
+import EditStudentForm from '@/components/forms/EditStudentForm';
+import AssignStudentForm from '@/components/forms/AssignStudentForm';
+import OrganizationDetailsForm from '@/components/forms/OrganizationDetailsForm';
+import EditOrganizationForm from '@/components/forms/EditOrganizationForm';
+import ManageStudentsForm from '@/components/forms/ManageStudentsForm';
+import ViewAllApplicationsForm from '@/components/forms/ViewAllApplicationsForm';
+import ReviewApplicationForm from '@/components/forms/ReviewApplicationForm';
 
 const AdminDashboard = () => {
   const [showAddOrganizationForm, setShowAddOrganizationForm] = useState(false);
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
+  const [showStudentProfileForm, setShowStudentProfileForm] = useState(false);
+  const [showEditStudentForm, setShowEditStudentForm] = useState(false);
+  const [showAssignStudentForm, setShowAssignStudentForm] = useState(false);
+  const [showOrganizationDetailsForm, setShowOrganizationDetailsForm] = useState(false);
+  const [showEditOrganizationForm, setShowEditOrganizationForm] = useState(false);
+  const [showManageStudentsForm, setShowManageStudentsForm] = useState(false);
+  const [showViewAllApplicationsForm, setShowViewAllApplicationsForm] = useState(false);
+  const [showReviewApplicationForm, setShowReviewApplicationForm] = useState(false);
+  
+  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
+  const [selectedApplication, setSelectedApplication] = useState<any>(null);
 
   const stats = [
     {
@@ -89,6 +112,60 @@ const AdminDashboard = () => {
     }
   ];
 
+  const students = [
+    {
+      id: 1,
+      name: "Alice Wanjiku",
+      studentId: "154789",
+      email: "alice.wanjiku@student.strathmore.edu",
+      course: "Bachelor of Business Information Technology",
+      year: 3,
+      status: "Active",
+      organization: "Safaricom PLC",
+      supervisor: "Dr. Jane Wanjiku"
+    },
+    {
+      id: 2,
+      name: "John Kamau",
+      studentId: "154790",
+      email: "john.kamau@student.strathmore.edu",
+      course: "Bachelor of Commerce",
+      year: 3,
+      status: "Active",
+      organization: "Kenya Commercial Bank",
+      supervisor: "Prof. Peter Mburu"
+    }
+  ];
+
+  const organizations = [
+    {
+      id: 1,
+      name: 'Safaricom PLC',
+      industry: 'Telecommunications',
+      location: 'Nairobi',
+      contactPerson: 'Jane Wanjiku',
+      email: 'jane.wanjiku@safaricom.co.ke',
+      phone: '+254700123456',
+      activeStudents: 5,
+      totalCapacity: 10,
+      rating: 4.8,
+      status: 'Active'
+    },
+    {
+      id: 2,
+      name: 'Kenya Commercial Bank',
+      industry: 'Banking',
+      location: 'Nairobi',
+      contactPerson: 'John Kamau',
+      email: 'john.kamau@kcbgroup.com',
+      phone: '+254700234567',
+      activeStudents: 3,
+      totalCapacity: 8,
+      rating: 4.6,
+      status: 'Active'
+    }
+  ];
+
   const systemAlerts = [
     {
       id: 1,
@@ -124,7 +201,11 @@ const AdminDashboard = () => {
   };
 
   const handleReview = (id: number) => {
-    console.log('Reviewing application:', id);
+    const application = recentApplications.find(app => app.id === id);
+    if (application) {
+      setSelectedApplication(application);
+      setShowReviewApplicationForm(true);
+    }
   };
 
   const handleApprove = (id: number) => {
@@ -136,7 +217,7 @@ const AdminDashboard = () => {
   };
 
   const handleViewAll = () => {
-    console.log('View all applications');
+    setShowViewAllApplicationsForm(true);
   };
 
   const handleAddOrganization = (data: any) => {
@@ -147,8 +228,60 @@ const AdminDashboard = () => {
     console.log('Student added:', data);
   };
 
+  const handleViewProfile = (id: number) => {
+    const student = students.find(s => s.id === id);
+    if (student) {
+      setSelectedStudent(student);
+      setShowStudentProfileForm(true);
+    }
+  };
+
+  const handleEditStudent = (id: number) => {
+    const student = students.find(s => s.id === id);
+    if (student) {
+      setSelectedStudent(student);
+      setShowEditStudentForm(true);
+    }
+  };
+
+  const handleAssignStudent = (id: number) => {
+    const student = students.find(s => s.id === id);
+    if (student) {
+      setSelectedStudent(student);
+      setShowAssignStudentForm(true);
+    }
+  };
+
+  const handleViewOrganizationDetails = (id: number) => {
+    const organization = organizations.find(org => org.id === id);
+    if (organization) {
+      setSelectedOrganization(organization);
+      setShowOrganizationDetailsForm(true);
+    }
+  };
+
+  const handleEditOrganization = (id: number) => {
+    const organization = organizations.find(org => org.id === id);
+    if (organization) {
+      setSelectedOrganization(organization);
+      setShowEditOrganizationForm(true);
+    }
+  };
+
+  const handleManageStudents = (id: number) => {
+    const organization = organizations.find(org => org.id === id);
+    if (organization) {
+      setSelectedOrganization(organization);
+      setShowManageStudentsForm(true);
+    }
+  };
+
   const handleExportReport = () => {
     console.log('Exporting report...');
+  };
+
+  const handleReviewApplication = (data: any) => {
+    console.log('Application reviewed:', data);
   };
 
   return (
@@ -241,37 +374,42 @@ const AdminDashboard = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Student Management</CardTitle>
+                    <CardTitle>Student Directory</CardTitle>
                     <CardDescription>Manage all students in the system</CardDescription>
                   </div>
                   <Button onClick={() => setShowAddStudentForm(true)}>
-                    <Plus className="mr-2 h-4 w-4" />
+                    <UserPlus className="mr-2 h-4 w-4" />
                     Add Student
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold">Alice Wanjiku</h4>
-                        <p className="text-sm text-muted-foreground">ID: 154789</p>
-                        <p className="text-sm text-muted-foreground">alice.wanjiku@student.strathmore.edu</p>
-                      </div>
-                      <div className="space-x-2">
-                        <Button size="sm" variant="outline">
-                          View Profile
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          Edit
-                        </Button>
-                        <Button size="sm">
-                          Assign
-                        </Button>
+                  {students.map((student) => (
+                    <div key={student.id} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold">{student.name}</h4>
+                          <p className="text-sm text-muted-foreground">ID: {student.studentId}</p>
+                          <p className="text-sm text-muted-foreground">{student.email}</p>
+                          <p className="text-sm text-muted-foreground">{student.course} - Year {student.year}</p>
+                        </div>
+                        <div className="space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => handleViewProfile(student.id)}>
+                            <Eye className="mr-1 h-4 w-4" />
+                            View Profile
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleEditStudent(student.id)}>
+                            <Edit className="mr-1 h-4 w-4" />
+                            Edit
+                          </Button>
+                          <Button size="sm" onClick={() => handleAssignStudent(student.id)}>
+                            Assign
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -282,7 +420,7 @@ const AdminDashboard = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Organization Management</CardTitle>
+                    <CardTitle>Organization Directory</CardTitle>
                     <CardDescription>Manage partner organizations</CardDescription>
                   </div>
                   <Button onClick={() => setShowAddOrganizationForm(true)}>
@@ -293,26 +431,30 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold">Safaricom PLC</h4>
-                        <p className="text-sm text-muted-foreground">Telecommunications</p>
-                        <p className="text-sm text-muted-foreground">5/10 students assigned</p>
-                      </div>
-                      <div className="space-x-2">
-                        <Button size="sm" variant="outline">
-                          View Details
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          Edit
-                        </Button>
-                        <Button size="sm">
-                          Manage Students
-                        </Button>
+                  {organizations.map((org) => (
+                    <div key={org.id} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold">{org.name}</h4>
+                          <p className="text-sm text-muted-foreground">{org.industry}</p>
+                          <p className="text-sm text-muted-foreground">{org.activeStudents}/{org.totalCapacity} students assigned</p>
+                        </div>
+                        <div className="space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => handleViewOrganizationDetails(org.id)}>
+                            <Eye className="mr-1 h-4 w-4" />
+                            View Details
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleEditOrganization(org.id)}>
+                            <Edit className="mr-1 h-4 w-4" />
+                            Edit
+                          </Button>
+                          <Button size="sm" onClick={() => handleManageStudents(org.id)}>
+                            Manage Students
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -427,6 +569,101 @@ const AdminDashboard = () => {
           <AddStudentForm
             onClose={() => setShowAddStudentForm(false)}
             onSubmit={handleAddStudent}
+          />
+        )}
+
+        {showStudentProfileForm && selectedStudent && (
+          <StudentProfileForm
+            onClose={() => {
+              setShowStudentProfileForm(false);
+              setSelectedStudent(null);
+            }}
+            student={selectedStudent}
+          />
+        )}
+
+        {showEditStudentForm && selectedStudent && (
+          <EditStudentForm
+            onClose={() => {
+              setShowEditStudentForm(false);
+              setSelectedStudent(null);
+            }}
+            student={selectedStudent}
+            onSubmit={(data) => {
+              console.log('Student updated:', data);
+              setShowEditStudentForm(false);
+              setSelectedStudent(null);
+            }}
+          />
+        )}
+
+        {showAssignStudentForm && selectedStudent && (
+          <AssignStudentForm
+            onClose={() => {
+              setShowAssignStudentForm(false);
+              setSelectedStudent(null);
+            }}
+            onSubmit={(data) => {
+              console.log('Student assigned:', data);
+              setShowAssignStudentForm(false);
+              setSelectedStudent(null);
+            }}
+          />
+        )}
+
+        {showOrganizationDetailsForm && selectedOrganization && (
+          <OrganizationDetailsForm
+            onClose={() => {
+              setShowOrganizationDetailsForm(false);
+              setSelectedOrganization(null);
+            }}
+            organization={selectedOrganization}
+          />
+        )}
+
+        {showEditOrganizationForm && selectedOrganization && (
+          <EditOrganizationForm
+            onClose={() => {
+              setShowEditOrganizationForm(false);
+              setSelectedOrganization(null);
+            }}
+            organization={selectedOrganization}
+            onSubmit={(data) => {
+              console.log('Organization updated:', data);
+              setShowEditOrganizationForm(false);
+              setSelectedOrganization(null);
+            }}
+          />
+        )}
+
+        {showManageStudentsForm && selectedOrganization && (
+          <ManageStudentsForm
+            onClose={() => {
+              setShowManageStudentsForm(false);
+              setSelectedOrganization(null);
+            }}
+            organization={selectedOrganization}
+          />
+        )}
+
+        {showViewAllApplicationsForm && (
+          <ViewAllApplicationsForm
+            onClose={() => setShowViewAllApplicationsForm(false)}
+            applications={recentApplications}
+            onReview={handleReview}
+            onApprove={handleApprove}
+            onReject={handleReject}
+          />
+        )}
+
+        {showReviewApplicationForm && selectedApplication && (
+          <ReviewApplicationForm
+            onClose={() => {
+              setShowReviewApplicationForm(false);
+              setSelectedApplication(null);
+            }}
+            application={selectedApplication}
+            onSubmit={handleReviewApplication}
           />
         )}
       </div>

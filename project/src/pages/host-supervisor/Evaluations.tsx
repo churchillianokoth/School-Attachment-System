@@ -3,14 +3,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Star, Plus } from 'lucide-react';
+import { Star, Plus, Eye, Download } from 'lucide-react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/DashboardHeader';
 import CreateEvaluationForm from '@/components/forms/CreateEvaluationForm';
+import EvaluationDetailsForm from '@/components/forms/EvaluationDetailsForm';
 
 function Evaluations() {
   const [showCreateEvaluationForm, setShowCreateEvaluationForm] = useState(false);
+  const [showEvaluationDetailsForm, setShowEvaluationDetailsForm] = useState(false);
   const [selectedStudentForEvaluation, setSelectedStudentForEvaluation] = useState('');
+  const [selectedEvaluationForDetails, setSelectedEvaluationForDetails] = useState<any>(null);
 
   const evaluations = [
     {
@@ -89,6 +92,11 @@ function Evaluations() {
   const handleStartEvaluation = (studentName: string) => {
     setSelectedStudentForEvaluation(studentName);
     setShowCreateEvaluationForm(true);
+  };
+
+  const handleViewDetails = (evaluation: any) => {
+    setSelectedEvaluationForDetails(evaluation);
+    setShowEvaluationDetailsForm(true);
   };
 
   return (
@@ -233,10 +241,20 @@ function Evaluations() {
                   </div>
                   
                   <div className="flex justify-end mt-4 space-x-2">
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleViewDetails(evaluation)}
+                    >
+                      <Eye className="mr-1 h-4 w-4" />
                       View Details
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleViewDetails(evaluation)}
+                    >
+                      <Download className="mr-1 h-4 w-4" />
                       Download Report
                     </Button>
                   </div>
@@ -255,6 +273,16 @@ function Evaluations() {
             }}
             onSubmit={handleCreateEvaluation}
             studentName={selectedStudentForEvaluation}
+          />
+        )}
+
+        {showEvaluationDetailsForm && selectedEvaluationForDetails && (
+          <EvaluationDetailsForm
+            onClose={() => {
+              setShowEvaluationDetailsForm(false);
+              setSelectedEvaluationForDetails(null);
+            }}
+            evaluation={selectedEvaluationForDetails}
           />
         )}
       </div>

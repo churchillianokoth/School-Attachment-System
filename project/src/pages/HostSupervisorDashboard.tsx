@@ -19,12 +19,16 @@ import StatsCard from '@/components/StatsCard';
 import StudentCard from '@/components/StudentCard';
 import MarkAttendanceForm from '@/components/forms/MarkAttendanceForm';
 import CreateEvaluationForm from '@/components/forms/CreateEvaluationForm';
+import AssignStudentForm from '@/components/forms/AssignStudentForm';
+import StudentDetailsForm from '@/components/forms/StudentDetailsForm';
 
 function HostSupervisorDashboard() {
   const [showMarkAttendanceForm, setShowMarkAttendanceForm] = useState(false);
   const [showCreateEvaluationForm, setShowCreateEvaluationForm] = useState(false);
   const [showAssignStudentForm, setShowAssignStudentForm] = useState(false);
+  const [showStudentDetailsForm, setShowStudentDetailsForm] = useState(false);
   const [selectedStudentForEvaluation, setSelectedStudentForEvaluation] = useState<string>('');
+  const [selectedStudentForDetails, setSelectedStudentForDetails] = useState<any>(null);
 
   const students = [
     {
@@ -115,7 +119,11 @@ function HostSupervisorDashboard() {
   const presentToday = todayAttendance.filter(a => a.status === 'Present').length;
 
   function handleViewDetails(id: number) {
-    console.log('View details for student:', id);
+    const student = students.find(s => s.id === id);
+    if (student) {
+      setSelectedStudentForDetails(student);
+      setShowStudentDetailsForm(true);
+    }
   }
 
   function handleEvaluate(id: number) {
@@ -351,6 +359,23 @@ function HostSupervisorDashboard() {
             }}
             onSubmit={handleCreateEvaluation}
             studentName={selectedStudentForEvaluation}
+          />
+        )}
+
+        {showAssignStudentForm && (
+          <AssignStudentForm
+            onClose={() => setShowAssignStudentForm(false)}
+            onSubmit={handleAssignStudent}
+          />
+        )}
+
+        {showStudentDetailsForm && selectedStudentForDetails && (
+          <StudentDetailsForm
+            onClose={() => {
+              setShowStudentDetailsForm(false);
+              setSelectedStudentForDetails(null);
+            }}
+            student={selectedStudentForDetails}
           />
         )}
       </div>

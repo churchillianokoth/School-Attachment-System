@@ -34,8 +34,15 @@ import EditOrganizationForm from '@/components/forms/EditOrganizationForm';
 import ManageStudentsForm from '@/components/forms/ManageStudentsForm';
 import ViewAllApplicationsForm from '@/components/forms/ViewAllApplicationsForm';
 import ReviewApplicationForm from '@/components/forms/ReviewApplicationForm';
+import CreateEvaluationForm from '@/components/forms/CreateEvaluationForm';
+import EvaluationDetailsForm from '@/components/forms/EvaluationDetailsForm';
+import MarkAttendanceForm from '@/components/forms/MarkAttendanceForm';
+import SubmitReportForm from '@/components/forms/SubmitReportForm';
+import ReviewReportForm from '@/components/forms/ReviewReportForm';
+import StudentDetailsForm from '@/components/forms/StudentDetailsForm';
 
 const AdminDashboard = () => {
+  // Form visibility states
   const [showAddOrganizationForm, setShowAddOrganizationForm] = useState(false);
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
   const [showStudentProfileForm, setShowStudentProfileForm] = useState(false);
@@ -46,10 +53,20 @@ const AdminDashboard = () => {
   const [showManageStudentsForm, setShowManageStudentsForm] = useState(false);
   const [showViewAllApplicationsForm, setShowViewAllApplicationsForm] = useState(false);
   const [showReviewApplicationForm, setShowReviewApplicationForm] = useState(false);
+  const [showCreateEvaluationForm, setShowCreateEvaluationForm] = useState(false);
+  const [showEvaluationDetailsForm, setShowEvaluationDetailsForm] = useState(false);
+  const [showMarkAttendanceForm, setShowMarkAttendanceForm] = useState(false);
+  const [showSubmitReportForm, setShowSubmitReportForm] = useState(false);
+  const [showReviewReportForm, setShowReviewReportForm] = useState(false);
+  const [showStudentDetailsForm, setShowStudentDetailsForm] = useState(false);
   
+  // Selected items for forms
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
   const [selectedApplication, setSelectedApplication] = useState<any>(null);
+  const [selectedEvaluation, setSelectedEvaluation] = useState<any>(null);
+  const [selectedReport, setSelectedReport] = useState<any>(null);
+  const [selectedStudentForEvaluation, setSelectedStudentForEvaluation] = useState('');
 
   const stats = [
     {
@@ -166,6 +183,66 @@ const AdminDashboard = () => {
     }
   ];
 
+  const evaluations = [
+    {
+      id: 1,
+      studentName: "Alice Wanjiku",
+      evaluationType: "Weekly Performance Review",
+      date: "2024-06-15",
+      overallRating: 4.5,
+      status: "Completed",
+      skills: {
+        technical: 4.5,
+        communication: 4.2,
+        teamwork: 4.8,
+        punctuality: 4.0
+      }
+    },
+    {
+      id: 2,
+      studentName: "John Kamau",
+      evaluationType: "Monthly Progress Review",
+      date: "2024-06-10",
+      overallRating: 4.0,
+      status: "Completed",
+      skills: {
+        technical: 3.8,
+        communication: 4.2,
+        teamwork: 4.0,
+        punctuality: 4.2
+      }
+    }
+  ];
+
+  const reports = [
+    {
+      id: 1,
+      studentName: "Alice Wanjiku",
+      title: "Week 8 Progress Report",
+      submittedDate: "2024-06-18",
+      status: "Pending Review",
+      content: {
+        activities: "Worked on mobile app development using React Native",
+        achievements: "Successfully implemented user authentication",
+        challenges: "Had difficulty with state management",
+        learnings: "Learned about Redux for state management"
+      }
+    },
+    {
+      id: 2,
+      studentName: "John Kamau",
+      title: "Week 7 Progress Report",
+      submittedDate: "2024-06-15",
+      status: "Reviewed",
+      content: {
+        activities: "Analyzed business requirements for new banking system",
+        achievements: "Completed stakeholder interviews",
+        challenges: "Complex requirements gathering",
+        learnings: "Improved business analysis skills"
+      }
+    }
+  ];
+
   const systemAlerts = [
     {
       id: 1,
@@ -200,6 +277,7 @@ const AdminDashboard = () => {
     }
   };
 
+  // Application handlers
   const handleReview = (id: number) => {
     const application = recentApplications.find(app => app.id === id);
     if (application) {
@@ -220,10 +298,7 @@ const AdminDashboard = () => {
     setShowViewAllApplicationsForm(true);
   };
 
-  const handleAddOrganization = (data: any) => {
-    console.log('Organization added:', data);
-  };
-
+  // Student handlers
   const handleAddStudent = (data: any) => {
     console.log('Student added:', data);
   };
@@ -252,6 +327,19 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleViewStudentDetails = (id: number) => {
+    const student = students.find(s => s.id === id);
+    if (student) {
+      setSelectedStudent(student);
+      setShowStudentDetailsForm(true);
+    }
+  };
+
+  // Organization handlers
+  const handleAddOrganization = (data: any) => {
+    console.log('Organization added:', data);
+  };
+
   const handleViewOrganizationDetails = (id: number) => {
     const organization = organizations.find(org => org.id === id);
     if (organization) {
@@ -274,6 +362,40 @@ const AdminDashboard = () => {
       setSelectedOrganization(organization);
       setShowManageStudentsForm(true);
     }
+  };
+
+  // Evaluation handlers
+  const handleCreateEvaluation = (data: any) => {
+    console.log('Evaluation created:', data);
+  };
+
+  const handleViewEvaluationDetails = (evaluation: any) => {
+    setSelectedEvaluation(evaluation);
+    setShowEvaluationDetailsForm(true);
+  };
+
+  const handleEvaluateStudent = (studentName: string) => {
+    setSelectedStudentForEvaluation(studentName);
+    setShowCreateEvaluationForm(true);
+  };
+
+  // Report handlers
+  const handleSubmitReport = (data: any) => {
+    console.log('Report submitted:', data);
+  };
+
+  const handleReviewReport = (data: any) => {
+    console.log('Report reviewed:', data);
+  };
+
+  const handleReviewReportClick = (report: any) => {
+    setSelectedReport(report);
+    setShowReviewReportForm(true);
+  };
+
+  // Other handlers
+  const handleMarkAttendance = (data: any) => {
+    console.log('Attendance marked:', data);
   };
 
   const handleExportReport = () => {
@@ -302,6 +424,14 @@ const AdminDashboard = () => {
             <BarChart3 className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
+          <Button variant="outline" onClick={() => setShowMarkAttendanceForm(true)}>
+            <Clock className="mr-2 h-4 w-4" />
+            Mark Attendance
+          </Button>
+          <Button variant="outline" onClick={() => setShowSubmitReportForm(true)}>
+            <FileText className="mr-2 h-4 w-4" />
+            Submit Report
+          </Button>
         </div>
 
         {/* Stats Grid */}
@@ -320,9 +450,11 @@ const AdminDashboard = () => {
 
         <Tabs defaultValue="applications" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="applications">Recent Applications</TabsTrigger>
+            <TabsTrigger value="applications">Applications</TabsTrigger>
             <TabsTrigger value="students">Students</TabsTrigger>
             <TabsTrigger value="organizations">Organizations</TabsTrigger>
+            <TabsTrigger value="evaluations">Evaluations</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="alerts">System Alerts</TabsTrigger>
           </TabsList>
@@ -399,12 +531,18 @@ const AdminDashboard = () => {
                             <Eye className="mr-1 h-4 w-4" />
                             View Profile
                           </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleViewStudentDetails(student.id)}>
+                            View Details
+                          </Button>
                           <Button size="sm" variant="outline" onClick={() => handleEditStudent(student.id)}>
                             <Edit className="mr-1 h-4 w-4" />
                             Edit
                           </Button>
                           <Button size="sm" onClick={() => handleAssignStudent(student.id)}>
                             Assign
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleEvaluateStudent(student.name)}>
+                            Evaluate
                           </Button>
                         </div>
                       </div>
@@ -450,6 +588,93 @@ const AdminDashboard = () => {
                           </Button>
                           <Button size="sm" onClick={() => handleManageStudents(org.id)}>
                             Manage Students
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="evaluations" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Student Evaluations</CardTitle>
+                    <CardDescription>View and manage student evaluations</CardDescription>
+                  </div>
+                  <Button onClick={() => setShowCreateEvaluationForm(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create Evaluation
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {evaluations.map((evaluation) => (
+                    <div key={evaluation.id} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold">{evaluation.studentName}</h4>
+                          <p className="text-sm text-muted-foreground">{evaluation.evaluationType}</p>
+                          <p className="text-sm text-muted-foreground">Date: {evaluation.date}</p>
+                          <p className="text-sm">Overall Rating: {evaluation.overallRating}/5</p>
+                        </div>
+                        <div className="space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => handleViewEvaluationDetails(evaluation)}>
+                            <Eye className="mr-1 h-4 w-4" />
+                            View Details
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => handleViewEvaluationDetails(evaluation)}>
+                            <Download className="mr-1 h-4 w-4" />
+                            Download Report
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reports" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Student Reports</CardTitle>
+                    <CardDescription>Review and manage student reports</CardDescription>
+                  </div>
+                  <Button onClick={() => setShowSubmitReportForm(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Submit Report
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {reports.map((report) => (
+                    <div key={report.id} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold">{report.studentName}</h4>
+                          <p className="text-sm text-muted-foreground">{report.title}</p>
+                          <p className="text-sm text-muted-foreground">Submitted: {report.submittedDate}</p>
+                          <Badge variant={report.status === 'Reviewed' ? 'default' : 'secondary'}>
+                            {report.status}
+                          </Badge>
+                        </div>
+                        <div className="space-x-2">
+                          <Button size="sm" variant="outline" onClick={() => handleReviewReportClick(report)}>
+                            Review
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Download className="mr-1 h-4 w-4" />
+                            Download
                           </Button>
                         </div>
                       </div>
@@ -557,7 +782,7 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Forms */}
+        {/* ALL FORMS - EVERY SINGLE ONE */}
         {showAddOrganizationForm && (
           <AddOrganizationForm
             onClose={() => setShowAddOrganizationForm(false)}
@@ -664,6 +889,62 @@ const AdminDashboard = () => {
             }}
             application={selectedApplication}
             onSubmit={handleReviewApplication}
+          />
+        )}
+
+        {showCreateEvaluationForm && (
+          <CreateEvaluationForm
+            onClose={() => {
+              setShowCreateEvaluationForm(false);
+              setSelectedStudentForEvaluation('');
+            }}
+            onSubmit={handleCreateEvaluation}
+            studentName={selectedStudentForEvaluation}
+          />
+        )}
+
+        {showEvaluationDetailsForm && selectedEvaluation && (
+          <EvaluationDetailsForm
+            onClose={() => {
+              setShowEvaluationDetailsForm(false);
+              setSelectedEvaluation(null);
+            }}
+            evaluation={selectedEvaluation}
+          />
+        )}
+
+        {showMarkAttendanceForm && (
+          <MarkAttendanceForm
+            onClose={() => setShowMarkAttendanceForm(false)}
+            onSubmit={handleMarkAttendance}
+          />
+        )}
+
+        {showSubmitReportForm && (
+          <SubmitReportForm
+            onClose={() => setShowSubmitReportForm(false)}
+            onSubmit={handleSubmitReport}
+          />
+        )}
+
+        {showReviewReportForm && selectedReport && (
+          <ReviewReportForm
+            onClose={() => {
+              setShowReviewReportForm(false);
+              setSelectedReport(null);
+            }}
+            onSubmit={handleReviewReport}
+            report={selectedReport}
+          />
+        )}
+
+        {showStudentDetailsForm && selectedStudent && (
+          <StudentDetailsForm
+            onClose={() => {
+              setShowStudentDetailsForm(false);
+              setSelectedStudent(null);
+            }}
+            student={selectedStudent}
           />
         )}
       </div>

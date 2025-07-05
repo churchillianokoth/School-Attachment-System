@@ -6,9 +6,14 @@ import { Building2, MapPin, Users, Star, Search } from 'lucide-react';
 import Layout from '@/components/Layout';
 import DashboardHeader from '@/components/DashboardHeader';
 import SearchOrganizationsForm from '@/components/forms/SearchOrganizationsForm';
+import NewApplicationForm from '@/components/forms/NewApplicationForm';
+import OrganizationDetailsForm from '@/components/forms/OrganizationDetailsForm';
 
 const Organizations = () => {
   const [showSearchOrganizationsForm, setShowSearchOrganizationsForm] = useState(false);
+  const [showNewApplicationForm, setShowNewApplicationForm] = useState(false);
+  const [showOrganizationDetailsForm, setShowOrganizationDetailsForm] = useState(false);
+  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
 
   const organizations = [
     {
@@ -16,8 +21,14 @@ const Organizations = () => {
       name: 'Safaricom PLC',
       industry: 'Telecommunications',
       location: 'Nairobi',
+      contactPerson: 'Jane Wanjiku',
+      email: 'jane.wanjiku@safaricom.co.ke',
+      phone: '+254700123456',
+      activeStudents: 5,
+      totalCapacity: 10,
       availablePositions: 5,
       rating: 4.8,
+      status: 'Active',
       description: 'Leading telecommunications company in Kenya'
     },
     {
@@ -25,8 +36,14 @@ const Organizations = () => {
       name: 'Kenya Commercial Bank',
       industry: 'Banking',
       location: 'Nairobi',
+      contactPerson: 'John Kamau',
+      email: 'john.kamau@kcbgroup.com',
+      phone: '+254700234567',
+      activeStudents: 3,
+      totalCapacity: 8,
       availablePositions: 3,
       rating: 4.6,
+      status: 'Active',
       description: 'One of the largest commercial banks in East Africa'
     },
     {
@@ -34,8 +51,14 @@ const Organizations = () => {
       name: 'Equity Bank',
       industry: 'Banking',
       location: 'Nairobi',
+      contactPerson: 'Mary Akinyi',
+      email: 'mary.akinyi@equitybank.co.ke',
+      phone: '+254700345678',
+      activeStudents: 2,
+      totalCapacity: 6,
       availablePositions: 2,
       rating: 4.5,
+      status: 'Active',
       description: 'Pan-African financial services group'
     },
     {
@@ -43,11 +66,31 @@ const Organizations = () => {
       name: 'Co-operative Bank',
       industry: 'Banking',
       location: 'Nairobi',
+      contactPerson: 'Peter Ochieng',
+      email: 'peter.ochieng@co-opbank.co.ke',
+      phone: '+254700456789',
+      activeStudents: 1,
+      totalCapacity: 5,
       availablePositions: 4,
       rating: 4.4,
+      status: 'Active',
       description: 'Customer-owned financial institution'
     }
   ];
+
+  const handleApplyNow = (organization: any) => {
+    setSelectedOrganization(organization);
+    setShowNewApplicationForm(true);
+  };
+
+  const handleViewDetails = (organization: any) => {
+    setSelectedOrganization(organization);
+    setShowOrganizationDetailsForm(true);
+  };
+
+  const handleNewApplication = (data: any) => {
+    console.log('Application submitted:', data);
+  };
 
   return (
     <Layout>
@@ -144,10 +187,18 @@ const Organizations = () => {
                   </div>
                   
                   <div className="flex space-x-2">
-                    <Button size="sm" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => handleApplyNow(org)}
+                    >
                       Apply Now
                     </Button>
-                    <Button size="sm" variant="outline">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => handleViewDetails(org)}
+                    >
                       View Details
                     </Button>
                   </div>
@@ -161,6 +212,26 @@ const Organizations = () => {
         {showSearchOrganizationsForm && (
           <SearchOrganizationsForm
             onClose={() => setShowSearchOrganizationsForm(false)}
+          />
+        )}
+
+        {showNewApplicationForm && selectedOrganization && (
+          <NewApplicationForm
+            onClose={() => {
+              setShowNewApplicationForm(false);
+              setSelectedOrganization(null);
+            }}
+            onSubmit={handleNewApplication}
+          />
+        )}
+
+        {showOrganizationDetailsForm && selectedOrganization && (
+          <OrganizationDetailsForm
+            onClose={() => {
+              setShowOrganizationDetailsForm(false);
+              setSelectedOrganization(null);
+            }}
+            organization={selectedOrganization}
           />
         )}
       </div>

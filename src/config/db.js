@@ -4,7 +4,7 @@ require("dotenv").config();
 const pool = new Pool({
   user: "postgres",
   host: "127.0.0.1",
-  database: "Attachment db",
+  database: "Attachment_db",
   password: "1234",
   port: 5432,
 });

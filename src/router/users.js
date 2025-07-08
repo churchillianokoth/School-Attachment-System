@@ -1,19 +1,28 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
+const { 
+  getAllUsers, 
+  getUserById, 
+  createUser, 
+  updateUser, 
+  deleteUser, 
+  searchUsers, 
+  getUserStats 
+} = require("../controllers/usersController");
+const { 
+  isAuthenticated, 
+  isAdmin 
+} = require("../middleware/isAuthenticated");
 
-const usersController = require("../controllers/usersController");
-const  isAuthenticated = require("../middleware/isAuthenticated");
+// All user routes require authentication and admin role
+router.use(isAuthenticated, isAdmin);
 
-console.log("usersController", usersController);
-console.log("isAuthenticated", isAuthenticated);
-console.log("type of isAuthenticated", typeof isAuthenticated);
-console.log("Raw import:", require("../middleware/isAuthenticated"));
-// Test route
-// /users/get-users
-router.route("/get-users").get(usersController.getUsers);
-router.route("/get-user-byId/:id").get(usersController.getUserById);
-router
-  .route("/get-current-user")
-  .get(isAuthenticated.isAuthenticated, usersController.getCurrentUser);
+// User management
+router.get("/", getAllUsers);
+router.post("/", createUser);
+router.get("/search", searchUsers);
+router.get("/stats", getUserStats);
+router.get("/:id", getUserById);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 module.exports = router;

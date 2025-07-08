@@ -1,17 +1,14 @@
-const express = require("express");
-const router = express.Router();
-const { createUser, login } = require("../controllers/authController");
-const  isAuthenticated  = require("../middleware/isAuthenticated");
+const router = require("express").Router();
+const { createUser, login, getUser, logout } = require("../controllers/authController");
+const { isAuthenticated } = require("../middleware/isAuthenticated");
 
-const authController = require("../controllers/authController");
+// Public routes
 
-router.route("/create-user").post(authController.createUser);
-router.route("/login").post(authController.login);
-// Test route to check if authController is imported correctly
-console.log('authController:', authController);
-console.log('authController.login:', authController.login);
-console.log('typeof authController.login:', typeof authController.login);
-router.route("/register").post(authController.createUser);
-// router.route("/login").post(authController.login);
+router.post("/create-user", createUser);
+router.post("/login", login);
+
+// Protected routes
+router.get("/user", isAuthenticated, getUser);
+router.post("/logout", isAuthenticated, logout);
 
 module.exports = router;

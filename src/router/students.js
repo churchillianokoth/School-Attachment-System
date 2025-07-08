@@ -1,27 +1,29 @@
-const express = require('express');
-const router = express.Router();
-const { isStudent, isAuthenticated } = require('../middleware/isAuthenticated');
+const router = require("express").Router();
 
-// Only students can access
-router.get('/dashboard', isStudent, (req, res) => {
-  res.json({ 
-    success: true,
-    message: 'Student dashboard',
-    studentData: {
-      courses: ['Math', 'Science', 'English'],
-      grades: { Math: 'A', Science: 'B+', English: 'A-' }
-    }
-  });
-});
+const { 
+  getAllStudents, 
+  getStudentsBySupervisor, 
+  getStudentById, 
+  createStudent, 
+  updateStudent, 
+  deleteStudent, 
+  searchStudents 
+} = require("../controllers/studentsController");
+const { 
+  isAuthenticated, 
+  isAdmin, 
+  isSupervisor 
+} = require("../middleware/isAuthenticated");
 
-router.get('/assignments', isStudent, (req, res) => {
-  res.json({ 
-    success: true,
-    assignments: [
-      { id: 1, title: 'Math Homework', dueDate: '2024-01-20', status: 'pending' },
-      { id: 2, title: 'Science Project', dueDate: '2024-01-25', status: 'completed' }
-    ]
-  });
-});
+// Admin routes
+router.get("/get-all-students", isAuthenticated, isAdmin, getAllStudents);
+router.post("/create-student", isAuthenticated, isAdmin, createStudent);
+router.get("/search-student", isAuthenticated, isAdmin, searchStudents);
+router.get("/get-student/:id", isAuthenticated, isAdmin, getStudentById);
+router.put("/update-student/:id", isAuthenticated, isAdmin, updateStudent);
+router.delete("/delete-student/:id", isAuthenticated, isAdmin, deleteStudent);
+
+// Supervisor routes
+router.get("/supervisor/students", isAuthenticated, isSupervisor, getStudentsBySupervisor);
 
 module.exports = router;

@@ -1,24 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const { isAuthenticated } = require('../middleware/isAuthenticated');
+const router = require("express").Router();
+const { 
+  getProfile, 
+  updateProfile, 
+  changePassword, 
+  getUserActivity 
+} = require("../controllers/profileController");
+const { isAuthenticated } = require("../middleware/isAuthenticated");
 
-// Protected route - requires authentication
-router.get('/profile', isAuthenticated, (req, res) => {
-  // req.user is available here after authentication
-  res.json({ 
-    success: true,
-    user: req.user 
-  });
-});
+// All profile routes require authentication
+router.use(isAuthenticated);
 
-router.put('/profile', isAuthenticated, (req, res) => {
-  const { name, email } = req.body;
-  // Update user profile logic here
-  res.json({ 
-    success: true,
-    message: 'Profile updated',
-    userId: req.user.id 
-  });
-});
+// Profile management
+router.get("/get-profile", getProfile);
+router.put("/update-profile", updateProfile);
+router.put("/change-password", changePassword);
+router.get("/get-activity", getUserActivity);
 
 module.exports = router;

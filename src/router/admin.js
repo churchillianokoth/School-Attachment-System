@@ -1,44 +1,30 @@
-const express = require('express');
-const router = express.Router();
+const router = require("express").Router();
 const { 
-  isAdmin, 
-  isAdminOrSupervisor,
-  requireRole 
-} = require('../middleware/isAuthenticated');
+  getAdminStats, 
+  getAllSupervisors, 
+  createSupervisor, 
+  updateSupervisor, 
+  deleteSupervisor, 
+  getSystemAnalytics, 
+  getRecentActivities 
+} = require("../controllers/adminController");
+const { 
+  isAuthenticated, 
+  isAdmin 
+} = require("../middleware/isAuthenticated");
 
-// Only admins can access
-router.get('/dashboard', isAdmin, (req, res) => {
-  res.json({ 
-    success: true,
-    message: 'Admin dashboard data',
-    adminData: {
-      totalUsers: 150,
-      totalStudents: 100,
-      totalSupervisors: 20
-    }
-  });
-});
+// All admin routes require authentication and admin role
+router.use(isAuthenticated, isAdmin);
 
-// Admin or supervisors can access
-router.get('/reports', isAdminOrSupervisor, (req, res) => {
-  res.json({ 
-    success: true,
-    reports: [
-      { id: 1, title: 'Monthly Report', date: '2024-01-01' },
-      { id: 2, title: 'User Activity', date: '2024-01-15' }
-    ]
-  });
-});
+// Dashboard and statistics
+router.get("/stats", getAdminStats);
+router.get("/analytics", getSystemAnalytics);
+router.get("/activities", getRecentActivities);
 
-// Custom role access
-router.get('/system-settings', requireRole(['admin']), (req, res) => {
-  res.json({ 
-    success: true,
-    settings: {
-      maintenanceMode: false,
-      registrationOpen: true
-    }
-  });
-});
+// Supervisor management
+router.get("/supervisors", getAllSupervisors);
+router.post("/supervisors", createSupervisor);
+router.put("/supervisors/:id", updateSupervisor);
+router.delete("/supervisors/:id", deleteSupervisor);
 
 module.exports = router;

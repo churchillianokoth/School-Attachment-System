@@ -1,43 +1,34 @@
-const express = require('express');
-const router = express.Router();
+const router = require("express").Router();
 const { 
-  isSupervisor,
-  isSchoolSupervisor,
-  isHostSupervisor,
-  requireRole 
-} = require('../middleware/isAuthenticated');
+  getOrganization, 
+  getAssignedStudents, 
+  markAttendance, 
+  getAttendanceRecords, 
+  createEvaluation, 
+  getEvaluations, 
+  updateEvaluation 
+} = require("../controllers/supervisorController");
+const { 
+  isAuthenticated, 
+  isHostSupervisor 
+} = require("../middleware/isAuthenticated");
 
-// Any supervisor can access
-router.get('/dashboard', isSupervisor, (req, res) => {
-  res.json({ 
-    success: true,
-    message: 'Supervisor dashboard',
-    role: req.user.role,
-    supervisorData: {
-      studentsAssigned: 15,
-      reportsToReview: 5
-    }
-  });
-});
+// All supervisor routes require authentication and host supervisor role
+router.use(isAuthenticated, isHostSupervisor);
 
-// Only school supervisors
-router.get('/school-reports', isSchoolSupervisor, (req, res) => {
-  res.json({ 
-    success: true,
-    schoolReports: [
-      { school: 'Strathmore University', students: 50, status: 'active' }
-    ]
-  });
-});
+// Organization management
+router.get("/organization", getOrganization);
 
-// Only host supervisors
-router.get('/host-reports', isHostSupervisor, (req, res) => {
-  res.json({ 
-    success: true,
-    hostReports: [
-      { host: 'XYZ Company', students: 10, status: 'active' }
-    ]
-  });
-});
+// Student management
+router.get("/students", getAssignedStudents);
+
+// Attendance management
+router.post("/attendance", markAttendance);
+router.get("/attendance", getAttendanceRecords);
+
+// Evaluation management
+router.post("/evaluations", createEvaluation);
+router.get("/evaluations", getEvaluations);
+router.put("/evaluations/:id", updateEvaluation);
 
 module.exports = router;
